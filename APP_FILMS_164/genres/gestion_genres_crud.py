@@ -4,6 +4,7 @@ Auteur : OM 2021.03.16
 """
 from pathlib import Path
 
+import app as app
 from flask import redirect
 from flask import request
 from flask import session
@@ -47,7 +48,7 @@ def genres_afficher(order_by, id_genre_sel):
 
                     mc_afficher.execute(strsql_genres_afficher, valeur_id_genre_selected_dictionnaire)
                 else:
-                    strsql_genres_afficher = """SELECT * FROM t_client"""
+                    strsql_genres_afficher = """SELECT * FROM t_client ORDER BY id_client DESC"""
 
                     mc_afficher.execute(strsql_genres_afficher)
 
@@ -59,7 +60,7 @@ def genres_afficher(order_by, id_genre_sel):
                 if not data_genres and id_genre_sel == 0:
                     flash("""La table "t_client" est vide. !!""", "warning")
                 elif not data_genres and id_genre_sel > 0:
-                    # Si l'utilisateur change l'id_genre dans l'URL et que le genre n'existe pas,
+                    # Si l'utilisateur change l'id_client dans l'URL et que le genre n'existe pas,
                     flash(f"Le genre demandé n'existe pas !!", "warning")
                 else:
                     # Dans tous les autres cas, c'est que la table "t_client" est vide.
@@ -94,19 +95,21 @@ def genres_afficher(order_by, id_genre_sel):
                 Accepte le trait d'union ou l'apostrophe, et l'espace entre deux mots, mais pas plus d'une occurence.
 """
 
-
 @app.route("/genres_ajouter", methods=['GET', 'POST'])
 def genres_ajouter_wtf():
     form = FormWTFAjouterGenres()
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                name_genre_wtf = form.nom_genre_wtf.data
+                name_genre_wtf = form.prenom_wtf.data
                 name_genre = name_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_genre}
+                nom_client = form.nom_client_wtf.data
+
+                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_genre,
+                                                  "value_nom_client": nom_client}
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_genre = """INSERT INTO t_client (id_genre,intitule_genre) VALUES (NULL,%(value_intitule_genre)s) """
+                strsql_insert_genre = """INSERT INTO t_client (id_client,prenom,nom_client) VALUES (NULL,%(value_intitule_genre)s,%(value_nom_client)s) """
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
 
@@ -146,7 +149,7 @@ def genres_ajouter_wtf():
 
 @app.route("/genre_update", methods=['GET', 'POST'])
 def genre_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
+    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_client"
     id_genre_update = request.values['id_genre_btn_edit_html']
 
     # Objet formulaire pour l'UPDATE
@@ -160,14 +163,14 @@ def genre_update_wtf():
             name_genre_update = name_genre_update.lower()
             date_genre_essai = form_update.date_genre_wtf_essai.data
 
-            valeur_update_dictionnaire = {"value_id_genre": id_genre_update,
-                                          "value_name_genre": name_genre_update,
+            valeur_update_dictionnaire = {"value_id_client": id_genre_update,
+                                          "value_Prenom": name_genre_update,
                                           "value_date_genre_essai": date_genre_essai
                                           }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
             str_sql_update_intitulegenre = """UPDATE t_client SET intitule_genre = %(value_name_genre)s, 
-            date_ins_genre = %(value_date_genre_essai)s WHERE id_genre = %(value_id_genre)s """
+            date_ins_genre = %(value_date_genre_essai)s WHERE id_client = %(value_id_genre)s """
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
 
@@ -178,10 +181,10 @@ def genre_update_wtf():
             # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
             return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=id_genre_update))
         elif request.method == "GET":
-            # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_client"
-            str_sql_id_genre = "SELECT id_genre, intitule_genre, date_ins_genre FROM t_client " \
-                               "WHERE id_genre = %(value_id_genre)s"
-            valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
+            # Opération sur la BD pour récupérer "id_client" et "intitule_genre" de la "t_client"
+            str_sql_id_genre = "SELECT id_client, intitule_genre, date_ins_genre FROM t_client " \
+                               "WHERE id_client = %(value_id_genre)s"
+            valeur_select_dictionnaire = {"value_id_client": id_genre_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
             # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
@@ -220,7 +223,7 @@ def genre_update_wtf():
 def genre_delete_wtf():
     data_films_attribue_genre_delete = None
     btn_submit_del = None
-    # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_genre"
+    # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "id_client"
     id_genre_delete = request.values['id_genre_btn_delete_html']
 
     # Objet formulaire pour effacer le genre sélectionné.
@@ -247,10 +250,10 @@ def genre_delete_wtf():
                 valeur_delete_dictionnaire = {"value_id_genre": id_genre_delete}
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
-                str_sql_delete_films_genre = """DELETE FROM t_genre_film WHERE fk_genre = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM t_client WHERE id_genre = %(value_id_genre)s"""
-                # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_genre_film"
-                # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
+                str_sql_delete_films_genre = """DELETE FROM t_tache WHERE fk_tache = %(value_id_genre)s"""
+                str_sql_delete_idgenre = """DELETE FROM t_client WHERE id_client = %(value_id_genre)s"""
+                # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_client"
+                # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_client"
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(str_sql_delete_films_genre, valeur_delete_dictionnaire)
                     mconn_bd.execute(str_sql_delete_idgenre, valeur_delete_dictionnaire)
@@ -266,9 +269,9 @@ def genre_delete_wtf():
             print(id_genre_delete, type(id_genre_delete))
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_genre, intitule_genre FROM t_genre_film 
+            str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_client, intitule_genre FROM t_genre_film 
                                             INNER JOIN t_film ON t_genre_film.fk_film = t_film.id_film
-                                            INNER JOIN t_client ON t_genre_film.fk_genre = t_client.id_genre
+                                            INNER JOIN t_client ON t_genre_film.fk_genre = t_client.id_client
                                             WHERE fk_genre = %(value_id_genre)s"""
 
             with DBconnection() as mydb_conn:
@@ -280,8 +283,8 @@ def genre_delete_wtf():
                 # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
                 session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
-                # Opération sur la BD pour récupérer "id_genre" et "intitule_genre" de la "t_client"
-                str_sql_id_genre = "SELECT id_genre, intitule_genre FROM t_client WHERE id_genre = %(value_id_genre)s"
+                # Opération sur la BD pour récupérer "id_client" et "intitule_genre" de la "t_client"
+                str_sql_id_genre = "SELECT id_client, intitule_genre FROM t_client WHERE id_client = %(value_id_genre)s"
 
                 mydb_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
                 # Une seule valeur est suffisante "fetchone()",
