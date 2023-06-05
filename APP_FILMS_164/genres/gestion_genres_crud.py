@@ -65,7 +65,7 @@ def genres_afficher(order_by, id_genre_sel):
                 else:
                     # Dans tous les autres cas, c'est que la table "t_client" est vide.
                     # OM 2020.04.09 La ligne ci-dessous permet de donner un sentiment rassurant aux utilisateurs.
-                    flash(f"Données genres affichés !!", "success")
+                    flash(f"Données clients affichés !!", "success")
 
         except Exception as Exception_genres_afficher:
             raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
@@ -101,15 +101,21 @@ def genres_ajouter_wtf():
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                name_genre_wtf = form.prenom_wtf.data
-                name_genre = name_genre_wtf.lower()
-                nom_client = form.nom_client_wtf.data
 
-                valeurs_insertion_dictionnaire = {"value_intitule_genre": name_genre,
-                                                  "value_nom_client": nom_client}
+                prenom_wtf1 = form.prenom_wtf.data
+                name_client = prenom_wtf1.lower()
+
+                nom_client_wtf1 = form.nom_client_wtf.data
+                name_nom = nom_client_wtf1.lower()
+
+
+
+                valeurs_insertion_dictionnaire = {"value_nom_client": name_client,
+                                                  "value_prenom": name_nom,
+                                                  }
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_genre = """INSERT INTO t_client (id_client,prenom,nom_client) VALUES (NULL,%(value_intitule_genre)s,%(value_nom_client)s) """
+                strsql_insert_genre = """INSERT INTO t_client (id_client,prenom,nom) VALUES (NULL,%(value_nom_client)s,%(value_prenom)s) """
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_genre, valeurs_insertion_dictionnaire)
 
