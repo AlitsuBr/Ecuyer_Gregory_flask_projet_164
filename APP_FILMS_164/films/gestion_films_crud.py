@@ -40,9 +40,10 @@ def film_add_wtf():
                 valeurs_insertion_dictionnaire = {"value_nom_film": nom_film_add}
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_film = """INSERT INTO t_film (id_film,nom_film) VALUES (NULL,%(value_nom_film)s) """
-                with DBconnection() as mconn_bd:
-                    mconn_bd.execute(strsql_insert_film, valeurs_insertion_dictionnaire)
+                strsql_select_all_clients = "SELECT * FROM t_client"
+                with DBconnection(database="ECUYER_GREGORY_INFO1A_FLASK_164_2023") as conn:
+                    conn.execute(strsql_select_all_clients)
+                    clients = conn.fetchall()
 
                 flash(f"Données insérées !!", "success")
                 print(f"Données insérées !!")
@@ -100,14 +101,12 @@ def film_update_wtf():
                                           }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
-            str_sql_update_nom_film = """UPDATE t_film SET nom_film = %(value_nom_film)s,
-                                                            duree_film = %(value_duree_film)s,
-                                                            description_film = %(value_description_film)s,
-                                                            cover_link_film = %(value_cover_link_film)s,
-                                                            date_sortie_film = %(value_datesortie_film)s
-                                                            WHERE id_film = %(value_id_film)s"""
-            with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_nom_film, valeur_update_dictionnaire)
+            strsql_update_client = "UPDATE t_client SET Prenom = %(prenom)s, Nom = %(nom)s, " \
+                                   "Mail = %(mail)s, Telephone = %(telephone)s, " \
+                                   "fk_installation = %(fk_installation)s, fk_facture = %(fk_facture)s " \
+                                   "WHERE id_client = %(id_client)s"
+            with DBconnection(database="ECUYER_GREGORY_INFO1A_FLASK_164_2023") as conn:
+                conn.execute(strsql_update_client, client_data)
 
             flash(f"Donnée mise à jour !!", "success")
             print(f"Donnée mise à jour !!")
@@ -188,12 +187,12 @@ def film_delete_wtf():
             print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
             str_sql_delete_fk_film_genre = """DELETE FROM t_genre_film WHERE fk_film = %(value_id_film)s"""
-            str_sql_delete_film = """DELETE FROM t_film WHERE id_film = %(value_id_film)s"""
+            strsql_delete_client = "DELETE FROM t_client WHERE id_client = %(id_client)s"
             # Manière brutale d'effacer d'abord la "fk_film", même si elle n'existe pas dans la "t_genre_film"
             # Ensuite on peut effacer le film vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_delete_fk_film_genre, valeur_delete_dictionnaire)
-                mconn_bd.execute(str_sql_delete_film, valeur_delete_dictionnaire)
+                mconn_bd.execute(strsql_delete_client, valeur_delete_dictionnaire)
 
             flash(f"Film définitivement effacé !!", "success")
             print(f"Film définitivement effacé !!")
