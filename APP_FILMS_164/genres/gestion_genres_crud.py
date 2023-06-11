@@ -169,10 +169,10 @@ def genre_update_wtf():
             name_genre_update = form_update.nom_genre_update_wtf.data
             name_genre_update = name_genre_update.lower()
 
-            prenom_wtf1 = form.prenom_wtf.data
+            prenom_wtf1 = form.prenom_wtf1.data
             name_client = prenom_wtf1.lower()
 
-            nom_client_wtf1 = form.nom_client_wtf.data
+            nom_client_wtf1 = form.nom_client_wtf1.data
             name_nom = nom_client_wtf1.lower()
 
             valeur_update_dictionnaire = {"value_nom_client": name_client,
@@ -195,7 +195,7 @@ def genre_update_wtf():
             # Opération sur la BD pour récupérer "id_client" et "intitule_genre" de la "t_client"
             str_sql_id_genre = "SELECT id_client, intitule_genre, date_ins_genre FROM t_client " \
                                "WHERE id_client = %(value_id_genre)s"
-            valeur_select_dictionnaire = {"value_id_client": id_genre_update}
+            valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
             # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
@@ -205,7 +205,7 @@ def genre_update_wtf():
 
             # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
             form_update.nom_genre_update_wtf.data = data_nom_genre["name_client"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["name_nom"]
+            form_update.date_genre_wtf_essai.data = data_nom_genre["intitule_genre"]
 
     except Exception as Exception_genre_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
