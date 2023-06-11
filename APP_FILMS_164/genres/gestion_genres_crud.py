@@ -200,8 +200,8 @@ def genre_update_wtf():
                 data_genre = conn_bd.fetchone()
 
             # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.prenom_wtf_update.data = data_genre["Prenom"]
-            form_update.nom_client_wtf_update.data = data_genre["Nom"]
+            form_update.prenom_wtf_update.data = data_genre["prenom"]
+            form_update.nom_client_wtf_update.data = data_genre["nom_client"]
 
     except Exception as e:
         print("Erreur update ", e)
