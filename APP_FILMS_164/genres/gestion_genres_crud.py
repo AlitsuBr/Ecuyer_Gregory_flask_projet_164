@@ -273,9 +273,9 @@ def genre_delete_wtf():
             print(id_genre_delete, type(id_genre_delete))
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT id_genre_film, nom_film, id_client, intitule_genre FROM t_genre_film 
-                                            INNER JOIN t_film ON t_genre_film.fk_film = t_film.id_film
-                                            INNER JOIN t_client ON t_genre_film.fk_genre = t_client.id_client
+            str_sql_genres_films_delete = """SELECT installation
+                                            INNER JOIN t_installation ON t_client.fk_installation = t_installation.id_installation
+                                            INNER JOIN t_facture ON t_client.fk_facture = t_facture.id_facture
                                             WHERE fk_genre = %(value_id_genre)s"""
 
             with DBconnection() as mydb_conn:
