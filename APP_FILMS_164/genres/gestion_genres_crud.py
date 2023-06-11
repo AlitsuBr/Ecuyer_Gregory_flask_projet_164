@@ -180,7 +180,7 @@ def genre_update_wtf():
                                           }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
-            str_sql_update_intitulegenre = """UPDATE t_client SET intitule_genre = %(value_name_genre)s, 
+            str_sql_update_intitulegenre = """UPDATE t_client SET prenom = %(value_name_genre)s, 
             date_ins_genre = %(value_date_genre_essai)s WHERE id_client = %(value_id_genre)s """
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
@@ -259,11 +259,10 @@ def genre_delete_wtf():
 
             if form_delete.submit_btn_del.data:
                 valeur_delete_dictionnaire = {"value_id_genre": id_genre_delete}
-
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
                 str_sql_delete_films_genre = """DELETE FROM t_tache WHERE fk_installation = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM id_client WHERE t_client = %(value_id_genre)s"""
+                str_sql_delete_idgenre = """DELETE FROM t_client WHERE id_client = %(value_id_genre)s"""
                 # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_client"
                 # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_client"
                 with DBconnection() as mconn_bd:
