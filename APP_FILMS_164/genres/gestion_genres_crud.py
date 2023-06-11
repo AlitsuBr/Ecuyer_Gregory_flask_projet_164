@@ -206,7 +206,7 @@ def genre_update_wtf():
     except Exception as e:
         print("Erreur update ", e)
 
-    return render_template("genre_update_wtf.html", form_update=form_update)
+    return render_template("genres/genre_update_wtf.html", form_update=form_update)
 
 """
     Auteur : OM 2021.04.08
