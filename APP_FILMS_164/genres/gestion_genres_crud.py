@@ -278,7 +278,7 @@ def genre_delete_wtf():
                 FROM t_client
                 INNER JOIN t_installation ON t_client.fk_installation = t_installation.id_installation
                 INNER JOIN t_facture ON t_client.fk_facture = t_facture.id_facture
-                WHERE t_client.fk_genre = %(value_id_genre)s
+                WHERE fk_facture= %(value_id_genre)s
             """
 
             with DBconnection() as mydb_conn:
