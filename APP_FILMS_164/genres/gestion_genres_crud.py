@@ -223,29 +223,7 @@ def genre_update_wtf():
 """
 
 
-@app.route("/genre_delete/<id_genre>", methods=['GET', 'POST'])
-def genre_delete_wtf(id_genre):
-    form_delete = FormWTFDeleteGenre()
-
-    if form_delete.validate_on_submit():
-        # Supprimer le genre de la base de données
-        with DBconnection() as conn:
-            strsql_delete_genre = "DELETE FROM t_genre WHERE id_genre = %(id_genre)s"
-            conn.execute(strsql_delete_genre, {"id_genre": id_genre})
-
-        flash("Le genre a été supprimé avec succès.", "success")
-        return redirect(url_for('genres_list'))
-
-    # Récupérer les données du genre à supprimer
-    with DBconnection() as conn:
-        strsql_select_genre = "SELECT * FROM t_genre WHERE id_genre = %(id_genre)s"
-        conn.execute(strsql_select_genre, {"id_genre": id_genre})
-        genre = conn.fetchone()
-
-    return render_template("genre_delete_wtf.html", form_delete=form_delete, genre=genre)
-
-
-"""@app.route("/genre_delete", methods=['GET', 'POST'])
+@app.route("/genre_delete", methods=['GET', 'POST'])
 def genre_delete_wtf():
     data_films_attribue_genre_delete = None
     btn_submit_del = None
@@ -296,14 +274,13 @@ def genre_delete_wtf():
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
             str_sql_genres_films_delete = """
-"""
                 SELECT * FROM t_installation
                 INNER JOIN t_installation ON t_client.fk_installation = t_installation.id_installation
                 INNER JOIN t_facture ON t_client.fk_facture = t_facture.id_facture
-                WHERE fk_facture= %(value_id_genre)s"""
+                WHERE fk_facture= %(value_id_genre)s
+            """
 
-
-            """with DBconnection() as mydb_conn:
+            with DBconnection() as mydb_conn:
                 mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
                 data_films_attribue_genre_delete = mydb_conn.fetchall()
                 print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
@@ -336,4 +313,4 @@ def genre_delete_wtf():
     return render_template("genres/genre_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
-                           data_films_associes=data_films_attribue_genre_delete)"""
+                           data_films_associes=data_films_attribue_genre_delete)
