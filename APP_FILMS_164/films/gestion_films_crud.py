@@ -105,8 +105,8 @@ def film_update_wtf():
                                    "Mail = %(mail)s, Telephone = %(telephone)s, " \
                                    "fk_installation = %(fk_installation)s, fk_facture = %(fk_facture)s " \
                                    "WHERE id_client = %(id_client)s"
-            with DBconnection(database="ECUYER_GREGORY_INFO1A_FLASK_164_2023") as conn:
-                conn.execute(strsql_update_client, client_data)
+            with DBconnection() as mconn_bd:
+                mconn_bd.execute(str_sql_update_nom_film, valeur_update_dictionnaire)
 
             flash(f"Donnée mise à jour !!", "success")
             print(f"Donnée mise à jour !!")
@@ -187,12 +187,12 @@ def film_delete_wtf():
             print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
             str_sql_delete_fk_film_genre = """DELETE FROM t_genre_film WHERE fk_film = %(value_id_film)s"""
-            strsql_delete_client = "DELETE FROM t_client WHERE id_client = %(id_client)s"
+            str_sql_delete_film = """DELETE FROM t_client WHERE id_client = %(id_client)s"""
             # Manière brutale d'effacer d'abord la "fk_film", même si elle n'existe pas dans la "t_genre_film"
             # Ensuite on peut effacer le film vu qu'il n'est plus "lié" (INNODB) dans la "t_genre_film"
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_delete_fk_film_genre, valeur_delete_dictionnaire)
-                mconn_bd.execute(strsql_delete_client, valeur_delete_dictionnaire)
+                mconn_bd.execute(str_sql_delete_film, valeur_delete_dictionnaire)
 
             flash(f"Film définitivement effacé !!", "success")
             print(f"Film définitivement effacé !!")

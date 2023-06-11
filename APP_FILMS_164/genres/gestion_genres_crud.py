@@ -192,7 +192,7 @@ def genre_update_wtf():
 
         elif request.method == "GET":
             # Opération sur la BD pour récupérer les données du genre à mettre à jour
-            str_sql_select_genre = "SELECT Prenom, Nom FROM t_client WHERE id_client = %(value_id_genre)s"
+            str_sql_select_genre = "SELECT Prenom, Nom, FROM t_client WHERE id_client = %(value_id_genre)s"
             valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
 
             with DBconnection() as conn_bd:
