@@ -156,7 +156,7 @@ def genres_ajouter_wtf():
 
 @app.route("/genre_update", methods=['GET', 'POST'])
 def genre_update_wtf():
-    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_client"
+    # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_genre"
     id_genre_update = request.values['id_genre_btn_edit_html']
 
     # Objet formulaire pour l'UPDATE
@@ -164,7 +164,7 @@ def genre_update_wtf():
     try:
         print(" on submit ", form_update.validate_on_submit())
         if form_update.validate_on_submit():
-            # Récupèrer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
+            # Récupérer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
             # Puis la convertir en lettres minuscules.
 
             prenom_wtf_update = form_update.prenom_wtf_update.data
@@ -174,47 +174,39 @@ def genre_update_wtf():
             nom_client_wtf_update = nom_client_wtf_update.lower()
 
             valeur_update_dictionnaire = {
-                "value_id_client": id_genre_update,
+                "value_id_genre": id_genre_update,
                 "value_prenom_wtf_update": prenom_wtf_update,
                 "value_nom_client_wtf_update": nom_client_wtf_update
             }
 
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
-            str_sql_update_intitulegenre = """UPDATE t_client SET prenom = %(value_name_genre)s, 
-            date_ins_genre = %(value_date_genre_essai)s WHERE id_client = %(value_id_genre)s """
-            with DBconnection() as mconn_bd:
-                mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
+            str_sql_update_genre = """UPDATE t_client SET Prenom = %(value_prenom_wtf_update)s, 
+                Nom = %(value_nom_client_wtf_update)s WHERE id_client = %(value_id_genre)s"""
+            with DBconnection() as conn_bd:
+                conn_bd.execute(str_sql_update_genre, valeur_update_dictionnaire)
 
-            flash(f"Donnée mise à jour !!", "success")
-            print(f"Donnée mise à jour !!")
+            flash("Donnée mise à jour !!", "success")
 
-            # afficher et constater que la donnée est mise à jour.
-            # Affiche seulement la valeur modifiée, "ASC" et l'"id_genre_update"
             return redirect(url_for('genres_afficher', order_by="ASC", id_genre_sel=id_genre_update))
+
         elif request.method == "GET":
-            # Opération sur la BD pour récupérer "id_client" et "intitule_genre" de la "t_client"
-            str_sql_id_genre = "SELECT id_client, intitule_genre, date_ins_genre FROM t_client " \
-                               "WHERE id_client = %(value_id_genre)s"
+            # Opération sur la BD pour récupérer les données du genre à mettre à jour
+            str_sql_select_genre = "SELECT Prenom, Nom FROM t_client WHERE id_client = %(value_id_genre)s"
             valeur_select_dictionnaire = {"value_id_genre": id_genre_update}
-            with DBconnection() as mybd_conn:
-                mybd_conn.execute(str_sql_id_genre, valeur_select_dictionnaire)
-            # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
-            data_nom_genre = mybd_conn.fetchone()
-            print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                  data_nom_genre["intitule_genre"])
+
+            with DBconnection() as conn_bd:
+                conn_bd.execute(str_sql_select_genre, valeur_select_dictionnaire)
+                data_genre = conn_bd.fetchone()
 
             # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["name_client"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["intitule_genre"]
+            form_update.prenom_wtf_update.data = data_genre["Prenom"]
+            form_update.nom_client_wtf_update.data = data_genre["Nom"]
 
-    except Exception as Exception_genre_update_wtf:
-        raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_update_wtf.__name__} ; "
-                                      f"{Exception_genre_update_wtf}")
+    except Exception as e:
+        print("Erreur update ", e)
 
-    return render_template("genres/genre_update_wtf.html", form_update=form_update)
-
+    return render_template("genre_update_wtf.html", form_update=form_update)
 
 """
     Auteur : OM 2021.04.08
