@@ -4,11 +4,12 @@ Auteur : OM 2021.03.16
 """
 from pathlib import Path
 
-import app as app
+
 from flask import redirect
 from flask import request
 from flask import session
 from flask import url_for
+from flask_wtf import form
 
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
@@ -156,7 +157,7 @@ def genres_ajouter_wtf():
 @app.route("/genre_update", methods=['GET', 'POST'])
 def genre_update_wtf():
     # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "id_client"
-    id_genre_update = request.values['id_genre_btn_edit_html']
+    id_genre_update = request.values['id_genre_btn_update_html']
 
     # Objet formulaire pour l'UPDATE
     form_update = FormWTFUpdateGenre()
@@ -167,11 +168,15 @@ def genre_update_wtf():
             # Puis la convertir en lettres minuscules.
             name_genre_update = form_update.nom_genre_update_wtf.data
             name_genre_update = name_genre_update.lower()
-            date_genre_essai = form_update.date_genre_wtf_essai.data
 
-            valeur_update_dictionnaire = {"value_id_client": id_genre_update,
-                                          "value_Prenom": name_genre_update,
-                                          "value_date_genre_essai": date_genre_essai
+            prenom_wtf1 = form.prenom_wtf.data
+            name_client = prenom_wtf1.lower()
+
+            nom_client_wtf1 = form.nom_client_wtf.data
+            name_nom = nom_client_wtf1.lower()
+
+            valeur_update_dictionnaire = {"value_nom_client": name_client,
+                                              "value_prenom": name_nom,
                                           }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
@@ -199,8 +204,8 @@ def genre_update_wtf():
                   data_nom_genre["intitule_genre"])
 
             # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["intitule_genre"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["date_ins_genre"]
+            form_update.nom_genre_update_wtf.data = data_nom_genre["name_client"]
+            form_update.date_genre_wtf_essai.data = data_nom_genre["name_nom"]
 
     except Exception as Exception_genre_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
@@ -254,10 +259,11 @@ def genre_delete_wtf():
 
             if form_delete.submit_btn_del.data:
                 valeur_delete_dictionnaire = {"value_id_genre": id_genre_delete}
+
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
                 str_sql_delete_films_genre = """DELETE FROM t_tache WHERE fk_tache = %(value_id_genre)s"""
-                str_sql_delete_idgenre = """DELETE FROM t_client WHERE id_client = %(value_id_genre)s"""
+                str_sql_delete_idgenre = """DELETE FROM id_client WHERE t_client = %(value_id_genre)s"""
                 # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_client"
                 # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_client"
                 with DBconnection() as mconn_bd:

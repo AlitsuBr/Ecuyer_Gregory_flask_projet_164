@@ -16,7 +16,7 @@ class FormWTFAjouterGenres(FlaskForm):
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
     nom_genre_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
-    nom_letter_regexp = "r'^[A-Za-z\s]+$'"
+    nom_letter_regexp = "^([A-Za-z\s]+)"
     prenom_wtf = StringField("Entrer le prenom du le client ", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                                    Regexp(nom_letter_regexp,
                                                                           message="Pas de chiffres, de caractères "
@@ -40,6 +40,7 @@ class FormWTFUpdateGenre(FlaskForm):
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
     nom_genre_update_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
+    nom_letter_regexp = "^([A-Za-z\s]+)"
     nom_genre_update_wtf = StringField("Clavioter le genre ", validators=[Length(min=2, max=20, message="min 2 max 20"),
                                                                           Regexp(nom_genre_update_regexp,
                                                                                  message="Pas de chiffres, de "

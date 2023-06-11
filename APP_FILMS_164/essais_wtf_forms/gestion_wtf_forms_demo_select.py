@@ -125,7 +125,7 @@ def demo_select_dropdown_bootstrap():
         keys = [key for key in keys]
         print("choix_list_drop_down keys ", keys)
 
-        print("choix_list_drop_down request values ", request.values["ma_petite_liste_unique"])
+        print("choix_list_drop_down prenom_client_wtf ", request.values["ma_petite_liste_unique"])
         print("choix_list_drop_down request data ", request.data)
 
         for x in choix_list_drop_down:
