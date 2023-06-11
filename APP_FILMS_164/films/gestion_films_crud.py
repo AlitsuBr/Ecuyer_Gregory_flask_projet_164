@@ -41,7 +41,7 @@ def film_add_wtf():
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
                 strsql_select_all_clients = "SELECT * FROM t_client"
-                with DBconnection(database="ECUYER_GREGORY_INFO1A_FLASK_164_2023") as conn:
+                with DBconnection(database="ECUYER_GREGORY_INFO1A_Clients_164_2023") as conn:
                     conn.execute(strsql_select_all_clients)
                     clients = conn.fetchall()
 
