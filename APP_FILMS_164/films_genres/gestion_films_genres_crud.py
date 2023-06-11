@@ -221,11 +221,11 @@ def update_genre_film_selected():
 
             # SQL pour insérer une nouvelle association entre
             # "fk_film"/"id_film" et "fk_genre"/"id_client" dans la "t_genre_film"
-            strsql_insert_genre_film = """INSERT INTO t_genre_film (id_genre_film, fk_genre, fk_film)
-                                                    VALUES (NULL, %(value_fk_genre)s, %(value_fk_film)s)"""
+            strsql_insert_genre_film = """INSERT INTO t_installation (id_installation, fk_materiel, fk_client)
+                                                    VALUES (NULL, %(value_fk_materiel)s, %(value_fk_client)s)"""
 
             # SQL pour effacer une (des) association(s) existantes entre "id_film" et "id_client" dans la "t_genre_film"
-            strsql_delete_genre_film = """DELETE FROM t_genre_film WHERE fk_genre = %(value_fk_genre)s AND fk_film = %(value_fk_film)s"""
+            strsql_delete_genre_film = """DELETE FROM t_installation WHERE fk_client = %(value_fk_genre)s AND fk_film = %(value_fk_film)s"""
 
             with DBconnection() as mconn_bd:
                 # Pour le film sélectionné, parcourir la liste des genres à INSÉRER dans la "t_genre_film".
