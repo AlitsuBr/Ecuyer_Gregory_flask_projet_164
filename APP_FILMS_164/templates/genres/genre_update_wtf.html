@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 {% block title %} Editer un GENRE (WTF) {% endblock %}
 {% block body %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='wallpaper.jpg') }}");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    tbody {
+        background-color: rgba(13, 54, 64);
+    }
+
+    tr {
+        background-color: rgba(13, 54, 64);
+        color: white;
+    }
+    div {
+        color: white;
+    }
+</style>
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
@@ -12,16 +31,16 @@
 				{{ form_update.hidden_tag() }}
 				<div class="form-group">
 					<p>
-						{{ form_update.prenom_wtf.label }}<br>
-						{{ form_update.prenom_wtf(size=32) }}<br>
-						{% for error in form_update.prenom_wtf.errors %}
+						{{ form_update.prenom_wtf_update.label }}<br>
+						{{ form_update.prenom_wtf_update(size=32) }}<br>
+						{% for error in form_update.prenom_wtf_update.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>
 					<p>
-						{{ form_update.nom_client_wtf.label }}<br>
-						{{ form_update.nom_client_wtf(size=32) }}<br>
-						{% for error in form_update.nom_client_wtf.errors %}
+						{{ form_update.nom_client_wtf_update.label }}<br>
+						{{ form_update.nom_client_wtf_update(size=32) }}<br>
+						{% for error in form_update.nom_client_wtf_update.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>
